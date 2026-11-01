@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 import hashlib
 import math
-import os
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
@@ -616,15 +615,3 @@ class PlannerAgent:
         if parsed.tzinfo is None:
             raise ValueError("start_at 和 deadline 必须包含时区")
         return parsed
-
-
-def model_from_environment(name: str) -> DecisionModel:
-    if name == "mock":
-        return OfflineMockDecisionModel()
-    if name == "openai":
-        return OpenAICompatibleDecisionModel(
-            api_key=os.environ.get("OPENAI_API_KEY", ""),
-            model=os.environ.get("OPENAI_MODEL", ""),
-            base_url=os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
-        )
-    raise ValueError(f"未知模型类型: {name}")

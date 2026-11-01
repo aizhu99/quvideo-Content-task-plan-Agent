@@ -9,7 +9,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from .planner import OfflineMockDecisionModel, OpenAICompatibleDecisionModel, PlannerAgent
+from .planner import (
+    DecisionModel,
+    OfflineMockDecisionModel,
+    OpenAICompatibleDecisionModel,
+    PlannerAgent,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -35,7 +40,7 @@ def load_api_config(path: str | None) -> dict[str, str]:
     return values
 
 
-def create_model(model_name: str, config_path: str | None):
+def create_model(model_name: str, config_path: str | None) -> DecisionModel:
     if model_name == "mock":
         return OfflineMockDecisionModel()
     config = load_api_config(config_path)

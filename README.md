@@ -30,9 +30,9 @@ python -m src.main --input examples/deadline-tight.input.json --store .runtime/d
 默认 `mock` 只用于离线检查流程、工具参数和状态处理，不证明真实模型的决策质量。真实模型模式默认读取仓库根目录的本地 `apikey.txt`（已加入 `.gitignore`，不会提交），支持制表符分隔或 `key=value` 格式：
 
 ```text
-base_url (OpenAI)    https://api.example.com/v1
-api_key              本地密钥
-model                model-a / model-b
+base_url (OpenAI)=https://api.example.com/v1
+api_key=本地密钥
+model=model-a / model-b
 ```
 
 CLI 会按顺序尝试配置的模型名；遇到 HTTP 400/404 时尝试下一候选，并在输出 Trace 中记录实际模型名。进程环境变量 `OPENAI_API_KEY`、`OPENAI_BASE_URL`、`OPENAI_MODEL` 优先于文件配置。也可继续用环境变量显式配置：
@@ -64,5 +64,6 @@ python -m src.main --model openai --api-config apikey.txt --input examples/norma
 ## 交付信息
 
 - 题号：2，内容任务规划 Agent
-- GitHub URL：尚未配置远程仓库
-- 最终 commit SHA：本地完成后填写
+- GitHub URL：https://github.com/aizhu99/quvideo-Content-task-plan-Agent
+- 分支：`master`
+- 最终 commit SHA：运行 `git rev-parse HEAD` 获取，并随提交信息一并提供
