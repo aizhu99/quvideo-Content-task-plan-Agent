@@ -2,3 +2,4 @@ __pycache__/
 *.py[cod]
 .runtime/
 .env
+apikey.txt
