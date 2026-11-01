@@ -27,16 +27,24 @@ python -m src.main --input examples/deadline-tight.input.json --store .runtime/d
 
 ## 决策模型
 
-默认 `mock` 只用于离线检查流程、工具参数和状态处理，不证明真实模型的决策质量。配置 OpenAI 兼容 Chat Completions 服务后可运行模型决策：
+默认 `mock` 只用于离线检查流程、工具参数和状态处理，不证明真实模型的决策质量。真实模型模式默认读取仓库根目录的本地 `apikey.txt`（已加入 `.gitignore`，不会提交），支持制表符分隔或 `key=value` 格式：
+
+```text
+base_url (OpenAI)    https://api.example.com/v1
+api_key              本地密钥
+model                model-a / model-b
+```
+
+CLI 会按顺序尝试配置的模型名；遇到 HTTP 400/404 时尝试下一候选，并在输出 Trace 中记录实际模型名。进程环境变量 `OPENAI_API_KEY`、`OPENAI_BASE_URL`、`OPENAI_MODEL` 优先于文件配置。也可继续用环境变量显式配置：
 
 ```powershell
 $env:OPENAI_API_KEY = "你的密钥"
 $env:OPENAI_BASE_URL = "https://api.openai.com/v1"
 $env:OPENAI_MODEL = "支持 JSON mode 的模型名"
-python -m src.main --model openai --input examples/normal.input.json
+python -m src.main --model openai --api-config apikey.txt --input examples/normal.input.json
 ```
 
-也可设置 `AGENT_MODEL=openai`。密钥只从进程环境读取，不写入仓库或 Trace。真实模型/API 路径需要调用方提供可用凭据，本提交未执行在线模型验证；模型不可用时会明确返回未完成状态，不会静默降级为 Mock。
+也可设置 `AGENT_MODEL=openai`。密钥只从本地忽略的配置文件或进程环境读取，不写入仓库或 Trace。模型不可用时会明确返回未完成状态，不会静默降级为 Mock。
 
 ## 评审入口
 

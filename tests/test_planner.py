@@ -2,8 +2,11 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
+from urllib.error import HTTPError
 
-from src.planner import OfflineMockDecisionModel, PlannerAgent
+from src.main import create_model, load_api_config
+from src.planner import OfflineMockDecisionModel, OpenAICompatibleDecisionModel, PlannerAgent
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -165,6 +168,48 @@ class PlannerTests(unittest.TestCase):
         self.assertEqual(result["steps"][0]["status"], "failed")
         self.assertIn("原始主题", result["steps"][0]["result"]["error"])
         self.assertFalse(result["saved"])
+
+    def test_api_config_supports_tab_separated_local_file(self):
+        with tempfile.TemporaryDirectory() as temp:
+            config_path = Path(temp) / "apikey.txt"
+            config_path.write_text(
+                "base_url (OpenAI)\thttps://api.example.test/v1\n"
+                "api_key\tunit-test-secret\n"
+                "model\tmodel-a / model-b\n",
+                encoding="utf-8",
+            )
+            config = load_api_config(str(config_path))
+            with patch.dict("os.environ", {}, clear=True):
+                model = create_model("openai", str(config_path))
+        self.assertEqual(config["apikey"], "unit-test-secret")
+        self.assertIsInstance(model, OpenAICompatibleDecisionModel)
+        self.assertEqual(model.models, ["model-a", "model-b"])
+        self.assertEqual(model.base_url, "https://api.example.test/v1")
+
+    def test_api_model_falls_back_when_first_configured_model_is_unsupported(self):
+        response_body = json.dumps(
+            {"choices": [{"message": {"content": '{"action":"finish","arguments":{},"rationale":"stop","status":"incomplete"}'}}]}
+        ).encode("utf-8")
+
+        class Response:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+            def read(self):
+                return response_body
+
+        model = OpenAICompatibleDecisionModel("test-secret", ["bad-model", "working-model"], "https://api.example.test/v1")
+        with patch(
+            "src.planner.urllib.request.urlopen",
+            side_effect=[HTTPError("https://api.example.test", 404, "not found", {}, None), Response()],
+        ) as urlopen:
+            decision = model.decide({"task": {"topic": "test"}})
+        self.assertEqual(decision["action"], "finish")
+        self.assertEqual(model.trace_name, "openai_compatible:working-model")
+        self.assertEqual(urlopen.call_count, 2)
 
 
 if __name__ == "__main__":

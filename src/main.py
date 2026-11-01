@@ -9,9 +9,43 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from .planner import PlannerAgent, model_from_environment
+from .planner import OfflineMockDecisionModel, OpenAICompatibleDecisionModel, PlannerAgent
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def load_api_config(path: str | None) -> dict[str, str]:
+    if not path or not Path(path).exists():
+        return {}
+    values: dict[str, str] = {}
+    for raw_line in Path(path).read_text(encoding="utf-8-sig").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if "\t" in line:
+            key, value = line.split("\t", 1)
+        elif "=" in line:
+            key, value = line.split("=", 1)
+        elif ":" in line:
+            key, value = line.split(":", 1)
+        else:
+            continue
+        normalized = key.strip().lower().replace(" ", "").replace("_", "").replace("-", "")
+        values[normalized] = value.strip()
+    return values
+
+
+def create_model(model_name: str, config_path: str | None):
+    if model_name == "mock":
+        return OfflineMockDecisionModel()
+    config = load_api_config(config_path)
+    api_key = os.environ.get("OPENAI_API_KEY") or config.get("apikey", "")
+    base_url = os.environ.get("OPENAI_BASE_URL") or config.get("baseurl(openai)") or config.get("baseurl", "https://api.openai.com/v1")
+    model_value = os.environ.get("OPENAI_MODEL") or config.get("model", "")
+    models = [item.strip() for item in model_value.split("/") if item.strip()]
+    if not model_value:
+        raise ValueError("配置文件或环境变量中缺少 OPENAI_MODEL/model")
+    return OpenAICompatibleDecisionModel(api_key, models, base_url)
 
 
 def load_json(path: str) -> Any:
@@ -30,6 +64,11 @@ def main(argv: list[str] | None = None) -> int:
         help="决策模型，默认为离线 mock",
     )
     parser.add_argument(
+        "--api-config",
+        default="apikey.txt",
+        help="OpenAI 兼容 API 配置文件，默认读取仓库根目录 apikey.txt",
+    )
+    parser.add_argument(
         "--store",
         default=str(ROOT / ".runtime" / "plans.json"),
         help="幂等方案存储路径",
@@ -44,7 +83,7 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps({"status": "INVALID_INPUT", "error": str(exc)}, ensure_ascii=False), file=sys.stderr)
         return 2
     try:
-        model = model_from_environment(args.model)
+        model = create_model(args.model, args.api_config)
         agent = PlannerAgent(
             model=model,
             catalog_path=ROOT / "data" / "campaign.json",

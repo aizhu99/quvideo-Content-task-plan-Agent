@@ -12,7 +12,7 @@
 - 一次脚本工具失败：模型看到失败观察后，保留成功的素材检索结果，改用精简脚本模式；后续估算与保存使用精简模式的费用。
 - 截止时间紧：工时估算暴露超时后依次改选轻量素材和精简生成，重新估算后再决定是否保存。
 
-这些是决策模型根据观察选择动作的完整执行位置。默认离线决策器是确定性 Mock，只验证编排与状态流；`OpenAICompatibleDecisionModel` 将当前状态与最近观察发送到 OpenAI 兼容 Chat Completions JSON mode，由真实模型选择动作。真实模型的实际判断效果需配置凭据另行验证。
+这些是决策模型根据观察选择动作的完整执行位置。默认离线决策器是确定性 Mock，只验证编排与状态流；`OpenAICompatibleDecisionModel` 将当前状态与最近观察发送到 OpenAI 兼容 Chat Completions JSON mode，由真实模型选择动作。CLI 可从被忽略的 `apikey.txt` 读取模型候选、base URL 和 API key；遇到 400/404 会有限地尝试下一候选，环境变量可覆盖文件值。
 
 ## 工具与状态
 

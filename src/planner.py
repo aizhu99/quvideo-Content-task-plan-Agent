@@ -139,14 +139,20 @@ class OfflineMockDecisionModel:
 class OpenAICompatibleDecisionModel:
     """Optional JSON-mode adapter for OpenAI-compatible Chat Completions APIs."""
 
-    def __init__(self, api_key: str, model: str, base_url: str, timeout: float = 30):
-        if not api_key or not model:
+    def __init__(self, api_key: str, model: str | list[str], base_url: str, timeout: float = 30):
+        models = [model] if isinstance(model, str) else list(model)
+        models = [item.strip() for item in models if item and item.strip()]
+        if not api_key or not models:
             raise ValueError("设置 OPENAI_API_KEY 和 OPENAI_MODEL 后才能使用 --model openai")
         self.api_key = api_key
-        self.model = model
-        self.trace_name = f"openai_compatible:{model}"
+        self.models = models
+        self.model = models[0]
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
+
+    @property
+    def trace_name(self) -> str:
+        return f"openai_compatible:{self.model}"
 
     def decide(self, context: dict[str, Any]) -> dict[str, Any]:
         system = (
@@ -159,37 +165,44 @@ class OpenAICompatibleDecisionModel:
             "输出 JSON 对象字段 action, arguments, rationale, status。rationale 只能是一句简短决策依据，"
             "不要输出隐藏思维过程。finish 的 status 只能是 completed 或 incomplete。"
         )
-        body = {
-            "model": self.model,
-            "temperature": 0,
-            "response_format": {"type": "json_object"},
-            "messages": [
-                {"role": "system", "content": system},
-                {
-                    "role": "user",
-                    "content": json.dumps(context, ensure_ascii=False, separators=(",", ":")),
+        for index, model_name in enumerate(self.models):
+            body = {
+                "model": model_name,
+                "temperature": 0,
+                "response_format": {"type": "json_object"},
+                "messages": [
+                    {"role": "system", "content": system},
+                    {
+                        "role": "user",
+                        "content": json.dumps(context, ensure_ascii=False, separators=(",", ":")),
+                    },
+                ],
+            }
+            request = urllib.request.Request(
+                self.base_url + "/chat/completions",
+                data=json.dumps(body).encode("utf-8"),
+                headers={
+                    "Authorization": f"Bearer {self.api_key}",
+                    "Content-Type": "application/json",
                 },
-            ],
-        }
-        request = urllib.request.Request(
-            self.base_url + "/chat/completions",
-            data=json.dumps(body).encode("utf-8"),
-            headers={
-                "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json",
-            },
-            method="POST",
-        )
-        try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                payload = json.loads(response.read().decode("utf-8"))
-            content = payload["choices"][0]["message"]["content"]
-            decision = json.loads(content)
-        except (urllib.error.URLError, TimeoutError, OSError, ValueError, KeyError, IndexError, TypeError) as exc:
-            raise RuntimeError(f"模型决策请求失败: {exc}") from exc
-        if not isinstance(decision, dict):
-            raise RuntimeError("模型决策响应必须是 JSON 对象")
-        return decision
+                method="POST",
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                    payload = json.loads(response.read().decode("utf-8"))
+                content = payload["choices"][0]["message"]["content"]
+                decision = json.loads(content)
+                if not isinstance(decision, dict):
+                    raise RuntimeError("模型决策响应必须是 JSON 对象")
+                self.model = model_name
+                return decision
+            except urllib.error.HTTPError as exc:
+                if exc.code in {400, 404} and index < len(self.models) - 1:
+                    continue
+                raise RuntimeError(f"模型决策请求失败 (HTTP {exc.code})") from None
+            except (urllib.error.URLError, TimeoutError, OSError, ValueError, KeyError, IndexError, TypeError) as exc:
+                raise RuntimeError(f"模型决策请求失败: {type(exc).__name__}") from None
+        raise RuntimeError("所有配置的模型名称均不可用")
 
 
 class PlannerAgent:
