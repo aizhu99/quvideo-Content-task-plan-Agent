@@ -20,11 +20,11 @@ Codex 协助起草了 README 和 `docs/` 文档；我在检查后指出 AI 使�
 
 业务成功标准和结果判断由我负责；命令执行与运行材料由 Codex 在本工作区生成，我根据业务标准检查其结果。验证包括：
 
-- `python -m unittest discover -s tests -v`：13 项测试通过，输出保存在 `examples/test-results.txt`。
+- `python -m unittest discover -s tests -v`：16 项测试通过，输出保存在 `examples/test-results.txt`。
 - 检查离线 Trace 中预算从 12 单位超限后切换方案并以 8 单位保存；工具失败后更换生成模式；不可行方案明确未完成；重复执行只保留一条草稿。
-- 使用本地忽略的 `apikey.txt` 实际运行两条模型决策路径，记录在 `examples/normal.apikey.output.json` 和 `examples/tool-failure.apikey.output.json`。工具结果仍来自合成工具，不能据此声称已接入真实业务系统。
+- 使用本地忽略的 `apikey.txt` 实际运行三条模型决策路径，记录在 `examples/normal.apikey.output.json`、`examples/search-failure.apikey.output.json` 和 `examples/tool-failure.apikey.output.json`。其中两种不同工具失败分别触发检索策略和脚本模式调整。工具结果仍来自合成工具，不能据此声称已接入真实业务系统。
 - 检查 `apikey.txt` 未被 Git 跟踪，且代码、测试和 Trace 中没有提交真实 API 密钥。
 
 ## AI 使用边界
 
-离线 Mock 用于复现工具流程、约束和失败状态，不证明真实模型决策质量。两条真实模型 Trace 只构成有限样本，不能证明决策稳定性。AI 生成的代码和文档由我按业务验收标准审查；最终结论以可复现的测试和运行结果为依据。
+离线 Mock 用于复现工具流程、约束和失败状态，不证明真实模型决策质量。三条真实模型 Trace 只构成有限样本，不能证明决策稳定性。AI 生成的代码和文档由我按业务验收标准审查；最终结论以可复现的测试和运行结果为依据。

@@ -21,6 +21,7 @@ python -m unittest discover -s tests -v
 ```powershell
 python -m src.main --input examples/missing.input.json --store .runtime/missing.json
 python -m src.main --input examples/tool-failure.input.json --store .runtime/tool-failure.json
+python -m src.main --input examples/search-failure.input.json --store .runtime/search-failure.json
 python -m src.main --input examples/over-budget.input.json --store .runtime/over-budget.json
 python -m src.main --input examples/deadline-tight.input.json --store .runtime/deadline.json
 ```

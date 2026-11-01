@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import json
+import copy
 import hashlib
+import json
 import math
 import urllib.error
 import urllib.request
@@ -516,7 +517,7 @@ class PlannerAgent:
     @staticmethod
     def _model_context(state: dict[str, Any]) -> dict[str, Any]:
         artifacts = state["artifacts"]
-        return {
+        context = {
             "task": state["task"],
             "available_hours": state["available_hours"],
             "artifacts": artifacts,
@@ -525,6 +526,7 @@ class PlannerAgent:
             "saved_plan": state["saved_plan"],
             "history": state["history"],
         }
+        return copy.deepcopy(context)
 
     @staticmethod
     def _validate_decision(decision: dict[str, Any]) -> None:

@@ -1,0 +1,10 @@
+{
+  "request_id": "campus-search-failure-001",
+  "topic": "校园迎新活动",
+  "budget": 10,
+  "start_at": "2026-11-01T09:00:00Z",
+  "deadline": "2026-11-01T20:00:00Z",
+  "simulate_tool_failures": {
+    "search_materials": 1
+  }
+}

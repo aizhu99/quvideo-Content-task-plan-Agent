@@ -7,12 +7,15 @@ test_generated_request_id_is_stable_without_optional_start_time (test_planner.Pl
 test_generation_failure_changes_action_and_keeps_material (test_planner.PlannerTests.test_generation_failure_changes_action_and_keeps_material) ... ok
 test_missing_budget_and_deadline_returns_missing_fields (test_planner.PlannerTests.test_missing_budget_and_deadline_returns_missing_fields) ... ok
 test_model_cannot_change_the_original_topic_or_save_over_budget (test_planner.PlannerTests.test_model_cannot_change_the_original_topic_or_save_over_budget) ... ok
+test_next_model_decision_receives_the_previous_tool_observation (test_planner.PlannerTests.test_next_model_decision_receives_the_previous_tool_observation) ... ok
 test_no_matching_material_stops_with_insufficient_result (test_planner.PlannerTests.test_no_matching_material_stops_with_insufficient_result) ... ok
 test_normal_replans_after_budget_observation_and_saves (test_planner.PlannerTests.test_normal_replans_after_budget_observation_and_saves) ... ok
+test_same_request_id_with_different_content_does_not_overwrite_saved_plan (test_planner.PlannerTests.test_same_request_id_with_different_content_does_not_overwrite_saved_plan) ... ok
+test_storage_write_failure_is_not_reported_as_saved (test_planner.PlannerTests.test_storage_write_failure_is_not_reported_as_saved) ... ok
 test_tool_call_limit_returns_explicit_incomplete_status (test_planner.PlannerTests.test_tool_call_limit_returns_explicit_incomplete_status) ... ok
 test_transient_save_failure_resumes_from_successful_estimate (test_planner.PlannerTests.test_transient_save_failure_resumes_from_successful_estimate) ... ok
 
 ----------------------------------------------------------------------
-Ran 13 tests in 0.050s
+Ran 16 tests in 0.065s
 
 OK

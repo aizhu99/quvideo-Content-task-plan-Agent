@@ -8,11 +8,12 @@
 
 ## 动态决策实例
 
-- 预算 10：基础素材方案费用为 `4 + 8 = 12`，Trace 中模型看到超预算结果后改选轻量素材；新方案费用为 `3 + 5 = 8`，之后才保存。
-- 一次脚本工具失败：模型看到失败观察后，保留成功的素材检索结果，改用精简脚本模式；后续估算与保存使用精简模式的费用。
-- 截止时间紧：工时估算暴露超时后依次改选轻量素材和精简生成，重新估算后再决定是否保存。
+- 离线 Mock 的预算场景：基础素材方案费用为 `4 + 8 = 12`，观察到超预算后改选轻量素材；费用降到 `3 + 5 = 8` 后保存。此场景用于可重复验证编排，Mock 本身不证明模型决策质量。
+- 真实 API 的素材检索故障场景：标准检索失败后，模型依据工具错误把 `strategy` 从 `standard` 改成 `budget_saving`；见 `examples/search-failure.apikey.output.json`。
+- 真实 API 的脚本生成故障场景：标准生成失败后，模型保留已检索素材并把 `mode` 从 `standard` 改成 `concise`；见 `examples/tool-failure.apikey.output.json`。
+- 离线 Mock 的紧截止时间场景：估算超时后改用轻量素材与精简生成，再次估算并决定保存；见 `examples/deadline-tight.output.json`。
 
-这些是决策模型根据观察选择动作的完整执行位置。默认离线决策器是确定性 Mock，只验证编排与状态流；`OpenAICompatibleDecisionModel` 将当前状态与最近观察发送到 OpenAI 兼容 Chat Completions JSON mode，由真实模型选择动作。CLI 可从被忽略的 `apikey.txt` 读取模型候选、base URL 和 API key；遇到 400/404 会有限地尝试下一候选，环境变量可覆盖文件值。
+每轮循环会把任务、已成功产物、完整工具历史和最近一次观察的深拷贝交给模型；模型返回下一动作后由 Agent 执行工具，再将结果交回下一轮模型调用。真实 API 的两条失败路径展示了不同观察导致的不同动作参数。默认离线决策器是确定性 Mock，用于测试可重复的流程与状态边界；`OpenAICompatibleDecisionModel` 使用 OpenAI 兼容 Chat Completions JSON mode。CLI 可从被忽略的 `apikey.txt` 读取模型候选、base URL 和 API key；遇到 400/404 会有限地尝试下一候选，环境变量可覆盖文件值。
 
 ## 工具与状态
 

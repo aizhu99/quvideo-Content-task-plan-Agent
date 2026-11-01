@@ -169,6 +169,68 @@ class PlannerTests(unittest.TestCase):
         self.assertIn("原始主题", result["steps"][0]["result"]["error"])
         self.assertFalse(result["saved"])
 
+    def test_next_model_decision_receives_the_previous_tool_observation(self):
+        class ObservationDrivenModel:
+            def __init__(self):
+                self.contexts = []
+
+            def decide(self, context):
+                self.contexts.append(context)
+                observation = context["last_observation"]
+                if observation is None:
+                    return {
+                        "action": "search_materials",
+                        "arguments": {"strategy": "standard"},
+                        "rationale": "先检索标准素材。",
+                    }
+                return {
+                    "action": "search_materials",
+                    "arguments": {"strategy": "budget_saving"},
+                    "rationale": "标准检索失败，切换轻量检索。",
+                }
+
+        with tempfile.TemporaryDirectory() as temp:
+            model = ObservationDrivenModel()
+            result = PlannerAgent(
+                model, CATALOG, Path(temp) / "plans.json", max_tool_calls=2
+            ).run(task(simulate_tool_failures={"search_materials": 1}))
+
+        self.assertFalse(model.contexts[1]["last_observation"]["ok"])
+        self.assertEqual(model.contexts[1]["last_observation"]["action"], "search_materials")
+        self.assertIn("模拟工具故障", model.contexts[1]["last_observation"]["error"])
+        self.assertEqual(len(model.contexts[1]["history"]), 1)
+        self.assertEqual(result["trace"][0]["next_action"]["arguments"]["strategy"], "budget_saving")
+
+    def test_same_request_id_with_different_content_does_not_overwrite_saved_plan(self):
+        with tempfile.TemporaryDirectory() as temp:
+            store = Path(temp) / "plans.json"
+            agent = self.make_agent(store)
+            first = agent.run(task())
+            conflicting = agent.run(task(topic="新生季"))
+            saved_records = json.loads(store.read_text(encoding="utf-8"))["plans"]
+
+        self.assertTrue(first["saved"])
+        self.assertEqual(conflicting["status"], "INCOMPLETE_NO_FEASIBLE_PLAN")
+        self.assertFalse(conflicting["saved"])
+        self.assertIn("请求内容不同", conflicting["trace"][-1]["tool_result"]["summary"]["error"])
+        self.assertEqual(len(saved_records), 1)
+        self.assertEqual(saved_records[0]["topic"], "校园迎新活动")
+
+    def test_storage_write_failure_is_not_reported_as_saved(self):
+        with tempfile.TemporaryDirectory() as temp:
+            blocked_parent = Path(temp) / "not-a-directory"
+            blocked_parent.write_text("file blocks parent directory creation", encoding="utf-8")
+            result = self.make_agent(blocked_parent / "plans.json").run(task())
+
+        self.assertEqual(result["status"], "INCOMPLETE_NO_FEASIBLE_PLAN")
+        self.assertFalse(result["saved"])
+        failed_saves = [
+            step for step in result["trace"]
+            if step["decision"]["action"] == "save_plan" and not step["tool_result"]["ok"]
+        ]
+        self.assertEqual(len(failed_saves), 2)
+        self.assertTrue(all("保存方案失败" in step["tool_result"]["summary"]["error"] for step in failed_saves))
+
     def test_api_config_supports_tab_separated_local_file(self):
         with tempfile.TemporaryDirectory() as temp:
             config_path = Path(temp) / "apikey.txt"
