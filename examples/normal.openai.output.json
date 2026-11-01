@@ -1,0 +1,371 @@
+{
+  "status": "COMPLETED",
+  "decision_model": "openai_compatible:deepseek-chat",
+  "request_id": "campus-normal-001",
+  "input": {
+    "topic": "校园迎新活动",
+    "budget": 10.0,
+    "deadline": "2026-11-01T20:00:00+00:00",
+    "start_at": "2026-11-01T09:00:00+00:00",
+    "request_id": "campus-normal-001"
+  },
+  "available_hours": 11.0,
+  "reason": "方案草稿已保存。",
+  "missing_fields": [],
+  "plan": {
+    "request_id": "campus-normal-001",
+    "fingerprint": "c3da39a8b0f35e70ad11a5dec3bc4991148efda99d40458cca3997045c893272",
+    "topic": "校园迎新活动",
+    "budget_units": 10.0,
+    "deadline": "2026-11-01T20:00:00+00:00",
+    "material_strategy": "budget_saving",
+    "materials": [
+      {
+        "id": "MAT-CAMP-02",
+        "title": "迎新活动轻量资料包",
+        "facts": [
+          "活动包含校园导览"
+        ]
+      }
+    ],
+    "script": {
+      "script_id": "script-920cff72cb",
+      "mode": "concise",
+      "tasks": [
+        {
+          "name": "整理并确认素材",
+          "status": "planned"
+        },
+        {
+          "name": "生成活动内容初稿",
+          "status": "planned"
+        },
+        {
+          "name": "负责人确认发布渠道",
+          "status": "planned"
+        }
+      ]
+    },
+    "cost_estimate": {
+      "material_fee_units": 3,
+      "generation_fee_units": 4,
+      "total_units": 7,
+      "budget_units": 10.0,
+      "within_budget": true,
+      "estimated_hours": 4,
+      "available_hours": 11.0,
+      "within_deadline": true,
+      "material_id": "MAT-CAMP-02",
+      "script_id": "script-920cff72cb"
+    },
+    "status": "saved_draft",
+    "plan_id": "plan-52cdce801236"
+  },
+  "saved": true,
+  "duplicate": false,
+  "steps": [
+    {
+      "step": 1,
+      "action": "search_materials",
+      "status": "succeeded",
+      "result": {
+        "strategy": "standard",
+        "found": 1,
+        "material_ids": [
+          "MAT-CAMP-01"
+        ]
+      }
+    },
+    {
+      "step": 2,
+      "action": "generate_script",
+      "status": "succeeded",
+      "result": {
+        "script_id": "script-22778c1b73",
+        "mode": "standard",
+        "source_material_ids": [
+          "MAT-CAMP-01"
+        ],
+        "task_count": 3
+      }
+    },
+    {
+      "step": 3,
+      "action": "estimate_cost",
+      "status": "succeeded",
+      "result": {
+        "material_fee_units": 4,
+        "generation_fee_units": 8,
+        "total_units": 12,
+        "budget_units": 10.0,
+        "within_budget": false,
+        "estimated_hours": 10,
+        "available_hours": 11.0,
+        "within_deadline": true
+      }
+    },
+    {
+      "step": 4,
+      "action": "search_materials",
+      "status": "succeeded",
+      "result": {
+        "strategy": "budget_saving",
+        "found": 1,
+        "material_ids": [
+          "MAT-CAMP-02"
+        ]
+      }
+    },
+    {
+      "step": 5,
+      "action": "generate_script",
+      "status": "succeeded",
+      "result": {
+        "script_id": "script-920cff72cb",
+        "mode": "concise",
+        "source_material_ids": [
+          "MAT-CAMP-02"
+        ],
+        "task_count": 3
+      }
+    },
+    {
+      "step": 6,
+      "action": "estimate_cost",
+      "status": "succeeded",
+      "result": {
+        "material_fee_units": 3,
+        "generation_fee_units": 4,
+        "total_units": 7,
+        "budget_units": 10.0,
+        "within_budget": true,
+        "estimated_hours": 4,
+        "available_hours": 11.0,
+        "within_deadline": true
+      }
+    },
+    {
+      "step": 7,
+      "action": "save_plan",
+      "status": "succeeded",
+      "result": {
+        "saved": true,
+        "duplicate": false,
+        "plan_id": "plan-52cdce801236"
+      }
+    }
+  ],
+  "tools_called": 7,
+  "max_tool_calls": 12,
+  "trace": [
+    {
+      "step": 1,
+      "decision": {
+        "action": "search_materials",
+        "arguments": {
+          "topic": "校园迎新活动",
+          "strategy": "standard"
+        },
+        "rationale": "尚无素材，先按标准策略检索以支撑后续脚本生成。"
+      },
+      "tool_result": {
+        "ok": true,
+        "summary": {
+          "strategy": "standard",
+          "found": 1,
+          "material_ids": [
+            "MAT-CAMP-01"
+          ]
+        }
+      },
+      "next_action": {
+        "action": "generate_script",
+        "arguments": {
+          "mode": "standard"
+        },
+        "rationale": "素材已检索成功，下一步按标准模式生成脚本。"
+      }
+    },
+    {
+      "step": 2,
+      "decision": {
+        "action": "generate_script",
+        "arguments": {
+          "material_ids": [
+            "MAT-CAMP-01"
+          ],
+          "mode": "standard"
+        },
+        "rationale": "素材已检索成功，下一步按标准模式生成脚本。"
+      },
+      "tool_result": {
+        "ok": true,
+        "summary": {
+          "script_id": "script-22778c1b73",
+          "mode": "standard",
+          "source_material_ids": [
+            "MAT-CAMP-01"
+          ],
+          "task_count": 3
+        }
+      },
+      "next_action": {
+        "action": "estimate_cost",
+        "arguments": {},
+        "rationale": "素材与脚本已生成，下一步需估算费用与工时以核对预算和截止时间。"
+      }
+    },
+    {
+      "step": 3,
+      "decision": {
+        "action": "estimate_cost",
+        "arguments": {
+          "material_id": "MAT-CAMP-01",
+          "script_id": "script-22778c1b73"
+        },
+        "rationale": "素材与脚本已生成，下一步需估算费用与工时以核对预算和截止时间。"
+      },
+      "tool_result": {
+        "ok": true,
+        "summary": {
+          "material_fee_units": 4,
+          "generation_fee_units": 8,
+          "total_units": 12,
+          "budget_units": 10.0,
+          "within_budget": false,
+          "estimated_hours": 10,
+          "available_hours": 11.0,
+          "within_deadline": true
+        }
+      },
+      "next_action": {
+        "action": "search_materials",
+        "arguments": {
+          "topic": "校园迎新活动",
+          "strategy": "budget_saving"
+        },
+        "rationale": "当前方案总费用12单位超出预算10单位，改用轻量素材以降低成本。"
+      }
+    },
+    {
+      "step": 4,
+      "decision": {
+        "action": "search_materials",
+        "arguments": {
+          "topic": "校园迎新活动",
+          "strategy": "budget_saving"
+        },
+        "rationale": "当前方案总费用12单位超出预算10单位，改用轻量素材以降低成本。"
+      },
+      "tool_result": {
+        "ok": true,
+        "summary": {
+          "strategy": "budget_saving",
+          "found": 1,
+          "material_ids": [
+            "MAT-CAMP-02"
+          ]
+        }
+      },
+      "next_action": {
+        "action": "generate_script",
+        "arguments": {
+          "mode": "concise",
+          "material_ids": [
+            "MAT-CAMP-02"
+          ]
+        },
+        "rationale": "标准方案超预算，改用轻量素材并生成精简脚本以控制成本。"
+      }
+    },
+    {
+      "step": 5,
+      "decision": {
+        "action": "generate_script",
+        "arguments": {
+          "material_ids": [
+            "MAT-CAMP-02"
+          ],
+          "mode": "concise"
+        },
+        "rationale": "标准方案超预算，改用轻量素材并生成精简脚本以控制成本。"
+      },
+      "tool_result": {
+        "ok": true,
+        "summary": {
+          "script_id": "script-920cff72cb",
+          "mode": "concise",
+          "source_material_ids": [
+            "MAT-CAMP-02"
+          ],
+          "task_count": 3
+        }
+      },
+      "next_action": {
+        "action": "estimate_cost",
+        "arguments": {
+          "material_id": "MAT-CAMP-02",
+          "script_id": "script-920cff72cb"
+        },
+        "rationale": "轻量素材与精简脚本已生成，需先估算成本确认是否在预算与截止时间内。"
+      }
+    },
+    {
+      "step": 6,
+      "decision": {
+        "action": "estimate_cost",
+        "arguments": {
+          "material_id": "MAT-CAMP-02",
+          "script_id": "script-920cff72cb"
+        },
+        "rationale": "轻量素材与精简脚本已生成，需先估算成本确认是否在预算与截止时间内。"
+      },
+      "tool_result": {
+        "ok": true,
+        "summary": {
+          "material_fee_units": 3,
+          "generation_fee_units": 4,
+          "total_units": 7,
+          "budget_units": 10.0,
+          "within_budget": true,
+          "estimated_hours": 4,
+          "available_hours": 11.0,
+          "within_deadline": true
+        }
+      },
+      "next_action": {
+        "action": "save_plan",
+        "arguments": {
+          "material_id": "MAT-CAMP-02",
+          "script_id": "script-920cff72cb"
+        },
+        "rationale": "轻量方案总费用7单位在预算10内且预计4小时满足截止时间，可保存。"
+      }
+    },
+    {
+      "step": 7,
+      "decision": {
+        "action": "save_plan",
+        "arguments": {
+          "request_id": "campus-normal-001",
+          "plan_id": "plan-52cdce801236",
+          "estimated_units": 7
+        },
+        "rationale": "轻量方案总费用7单位在预算10内且预计4小时满足截止时间，可保存。"
+      },
+      "tool_result": {
+        "ok": true,
+        "summary": {
+          "saved": true,
+          "duplicate": false,
+          "plan_id": "plan-52cdce801236"
+        }
+      },
+      "next_action": {
+        "action": "finish",
+        "arguments": {},
+        "rationale": "方案已保存且预算与截止时间均满足，任务完成。"
+      }
+    }
+  ]
+}

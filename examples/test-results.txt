@@ -1,0 +1,16 @@
+test_budget_and_deadline_constraints_can_leave_task_incomplete (test_planner.PlannerTests.test_budget_and_deadline_constraints_can_leave_task_incomplete) ... ok
+test_deadline_observation_triggers_compact_plan (test_planner.PlannerTests.test_deadline_observation_triggers_compact_plan) ... ok
+test_duplicate_request_creates_only_one_saved_plan (test_planner.PlannerTests.test_duplicate_request_creates_only_one_saved_plan) ... ok
+test_generated_request_id_is_stable_without_optional_start_time (test_planner.PlannerTests.test_generated_request_id_is_stable_without_optional_start_time) ... ok
+test_generation_failure_changes_action_and_keeps_material (test_planner.PlannerTests.test_generation_failure_changes_action_and_keeps_material) ... ok
+test_missing_budget_and_deadline_returns_missing_fields (test_planner.PlannerTests.test_missing_budget_and_deadline_returns_missing_fields) ... ok
+test_model_cannot_change_the_original_topic_or_save_over_budget (test_planner.PlannerTests.test_model_cannot_change_the_original_topic_or_save_over_budget) ... ok
+test_no_matching_material_stops_with_insufficient_result (test_planner.PlannerTests.test_no_matching_material_stops_with_insufficient_result) ... ok
+test_normal_replans_after_budget_observation_and_saves (test_planner.PlannerTests.test_normal_replans_after_budget_observation_and_saves) ... ok
+test_tool_call_limit_returns_explicit_incomplete_status (test_planner.PlannerTests.test_tool_call_limit_returns_explicit_incomplete_status) ... ok
+test_transient_save_failure_resumes_from_successful_estimate (test_planner.PlannerTests.test_transient_save_failure_resumes_from_successful_estimate) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.044s
+
+OK

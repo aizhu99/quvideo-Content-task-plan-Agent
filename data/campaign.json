@@ -1,0 +1,36 @@
+{
+  "campaign": {
+    "topic_aliases": ["校园迎新", "新生季", "校园活动", "校园迎新活动"],
+    "materials": {
+      "standard": {
+        "id": "MAT-CAMP-01",
+        "title": "迎新活动基础资料包",
+        "facts": ["活动包含校园导览", "现场设有社团咨询点"],
+        "license_units": 4,
+        "search_hours": 1
+      },
+      "budget_saving": {
+        "id": "MAT-CAMP-02",
+        "title": "迎新活动轻量资料包",
+        "facts": ["活动包含校园导览"],
+        "license_units": 3,
+        "search_hours": 1
+      }
+    },
+    "generation": {
+      "standard": {
+        "standard": {"fee_units": 8, "hours": 9},
+        "concise": {"fee_units": 5, "hours": 4}
+      },
+      "budget_saving": {
+        "standard": {"fee_units": 5, "hours": 4},
+        "concise": {"fee_units": 4, "hours": 3}
+      }
+    },
+    "plan_tasks": [
+      "整理并确认素材",
+      "生成活动内容初稿",
+      "运营人员审核并确认发布渠道"
+    ]
+  }
+}

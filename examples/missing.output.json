@@ -1,0 +1,10 @@
+{
+  "status": "NEEDS_INPUT",
+  "missing_fields": [
+    "budget",
+    "deadline"
+  ],
+  "errors": [],
+  "trace": [],
+  "tools_called": 0
+}
