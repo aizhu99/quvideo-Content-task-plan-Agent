@@ -16,4 +16,4 @@
 
 ## 投入时间与未完成项
 
-实际用时：约 1.5 小时（按实现、API 接入、文档与最终验证的工作时段粗估；提交者可按实际投入修正）。代码已推送到 `https://github.com/aizhu99/quvideo-Content-task-plan-Agent`；最终 commit SHA 由仓库 `master` HEAD 确定并在提交信息中提供。未完成项：未接入真实素材、脚本生成、成本或保存业务系统；评审环境若无 API 凭据，只能运行离线 Mock。真实模型路径已用三条合成任务做有限实测，尚未进行大样本决策稳定性评测。
+实际用时：约 8 小时。代码已推送到 `https://github.com/aizhu99/quvideo-Content-task-plan-Agent`；最终 commit SHA 由仓库 `master` HEAD 确定并在提交信息中提供。未完成项：未接入真实素材、脚本生成、成本或保存业务系统；评审环境若无 API 凭据，只能运行离线 Mock。真实模型路径已用三条合成任务做有限实测，尚未进行大样本决策稳定性评测。
